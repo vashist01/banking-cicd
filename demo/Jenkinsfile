@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -28,23 +29,11 @@ pipeline {
             steps {
                 dir('demo') {
                     sh '''
-            docker tag demo:${BUILD_NUMBER} \
-           979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
-        '''
-                    }
-                }
-            }
-
-            stage('Push to ECR'){
-                steps{
-                    sh '''
-                    docker push \
-                    979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+                        docker build -t demo:${BUILD_NUMBER} .
                     '''
                 }
             }
-             
-    
+        }
 
         stage('Show Build Number') {
             steps {
@@ -70,32 +59,57 @@ pipeline {
                 }
             }
         }
-        stage ('ECR Login') {
-            steps{
+
+        stage('ECR Login') {
+            steps {
                 withCredentials([
-                    string(credentialsId:'aws-access-key',
-                           variable:'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId:'aws_secret_key',
-                            variable:'AWS_SECRET_ACCESS_KEY')
+                    string(
+                        credentialsId: 'aws-access-key',
+                        variable: 'AWS_ACCESS_KEY_ID'
+                    ),
+                    string(
+                        credentialsId: 'aws-secret-key',
+                        variable: 'AWS_SECRET_ACCESS_KEY'
+                    )
                 ]) {
                     sh '''
-                aws ecr get-login-password --region ap-south-1 | \
-                docker login \
-                --username AWS \
-                --password-stdin 979939293482.dkr.ecr.ap-south-1.amazonaws.com
-            '''
+                        aws ecr get-login-password --region ap-south-1 | \
+                        docker login \
+                        --username AWS \
+                        --password-stdin \
+                        979939293482.dkr.ecr.ap-south-1.amazonaws.com
+                    '''
                 }
+            }
+        }
+
+        stage('Docker Tag') {
+            steps {
+                sh '''
+                    docker tag \
+                    demo:${BUILD_NUMBER} \
+                    979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage('Push to ECR') {
+            steps {
+                sh '''
+                    docker push \
+                    979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'Maven build and test completed successfully'
+            echo 'Maven build, Docker build and ECR push completed successfully'
         }
 
         failure {
-            echo 'Maven build or test failed'
+            echo 'Pipeline failed'
         }
     }
 }
