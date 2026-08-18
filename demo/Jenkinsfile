@@ -1,9 +1,7 @@
 pipeline {
-
     agent any
 
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -29,10 +27,24 @@ pipeline {
         stage('Docker Build') {
             steps {
                 dir('demo') {
-                    sh 'docker build -t demo:${BUILD_NUMBER} .'
+                    sh '''
+            docker tag demo:${BUILD_NUMBER} \
+           979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+        '''
+                    }
                 }
             }
-        }
+
+            stage('Push to ECR'){
+                steps{
+                    sh '''
+                    docker push \
+                    979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+                    '''
+                }
+            }
+             
+    
 
         stage('Show Build Number') {
             steps {
@@ -55,6 +67,23 @@ pipeline {
                     sh '''
                         aws sts get-caller-identity
                     '''
+                }
+            }
+        }
+        stage ('ECR Login') {
+            steps{
+                withCredentials([
+                    string(credentialsId:'aws-access-key',
+                           variable:'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId:'aws_secret_key',
+                            variable:'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                aws ecr get-login-password --region ap-south-1 | \
+                docker login \
+                --username AWS \
+                --password-stdin 979939293482.dkr.ecr.ap-south-1.amazonaws.com
+            '''
                 }
             }
         }
