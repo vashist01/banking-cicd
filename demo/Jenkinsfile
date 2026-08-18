@@ -25,6 +25,14 @@ pipeline {
                 }                
             }
         }
+
+        stage('Docker Build'){
+            steps {
+                dir('demo'){
+                    sh 'docker build -t demo:{BUILD_NUMBER} .'
+                }
+            }
+        }
     }
 
     post {
