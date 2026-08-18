@@ -41,8 +41,14 @@ pipeline {
         stage('AWS Test'){
             steps{
                 withCredentials([
-                    string(credentials:'aws-access-key',variable:'AWS_ACCESS_KEY_ID'),
-                    string(credentials:'aws-sceret-key', variable:'AWSW_SCERET_ACCESS_KEY')
+                    string(
+                        credentialsId: 'aws-access-key',
+                        variable: 'AWS_ACCESS_KEY_ID'
+                        )
+                        string(
+                            credentialsId: 'aws-sceret-key',
+                            variable: 'AWS_SCERET_ACCESS_KEY'
+                        )
                 ]){
                     sh '''
                     aws sts get caller-identity
