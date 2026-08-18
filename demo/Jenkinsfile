@@ -33,6 +33,23 @@ pipeline {
                 }
             }
         }
+        stage('Show Build Number'){
+            steps{
+                echo "BUILD_NUMBER = ${BUILD_NUMBER}"
+            }
+        }
+        stage('AWS Test'){
+            steps{
+                withCredentials([
+                    string(credentials:'aws-access-key',variable:'AWS_ACCESS_KEY_ID'),
+                    string(credentials:'aws-sceret-key', variable:'AWSW_SCERET_ACCESS_KEY')
+                ]){
+                    sh '''
+                    aws sts get caller-identity
+                    '''
+                }
+            }
+        }
     }
 
     post {
