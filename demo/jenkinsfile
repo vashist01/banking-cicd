@@ -1,0 +1,32 @@
+pipeline{
+    agent any
+    
+    stage {
+        stage('Checkout'){
+            steps{
+                checkout scm
+            }
+        }
+    }
+
+    stage('Maven Build'){
+        steps{
+            sh 'mvn clean package -DskipTests'
+        }
+    }
+    stage('Maven Test'){
+        steps{
+            sh 'mvn Test'
+        }
+    }
+
+    post {
+        success {
+            echo 'Maven build and test successful'
+        }
+
+        failure {
+            echo 'Maven build or test failed'
+        }
+    }
+}
