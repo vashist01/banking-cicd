@@ -12,46 +12,48 @@ pipeline {
 
         stage('Maven Build') {
             steps {
-                dir('demo'){
-                sh 'mvn clean package -DskipTests'
-            }              
+                dir('demo') {
+                    sh 'mvn clean package -DskipTests'
+                }
             }
         }
 
         stage('Maven Test') {
             steps {
-                dir('demo'){
+                dir('demo') {
                     sh 'mvn test'
-                }                
+                }
             }
         }
 
-        stage('Docker Build'){
+        stage('Docker Build') {
             steps {
-                dir('demo'){
+                dir('demo') {
                     sh 'docker build -t demo:${BUILD_NUMBER} .'
                 }
             }
         }
-        stage('Show Build Number'){
-            steps{
+
+        stage('Show Build Number') {
+            steps {
                 echo "BUILD_NUMBER = ${BUILD_NUMBER}"
             }
         }
-        stage('AWS Test'){
-            steps{
+
+        stage('AWS Test') {
+            steps {
                 withCredentials([
                     string(
                         credentialsId: 'aws-access-key',
                         variable: 'AWS_ACCESS_KEY_ID'
-                        )
-                        string(
-                            credentialsId: 'aws-sceret-key',
-                            variable: 'AWS_SCERET_ACCESS_KEY'
-                        )
-                ]){
+                    ),
+                    string(
+                        credentialsId: 'aws-secret-key',
+                        variable: 'AWS_SECRET_ACCESS_KEY'
+                    )
+                ]) {
                     sh '''
-                    aws sts get caller-identity
+                        aws sts get-caller-identity
                     '''
                 }
             }
