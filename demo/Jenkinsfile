@@ -20,7 +20,9 @@ pipeline {
 
         stage('Maven Test') {
             steps {
-                sh 'mvn test'
+                dir('demo'){
+                    sh 'mvn test'
+                }                
             }
         }
     }
