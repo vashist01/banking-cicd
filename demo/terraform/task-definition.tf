@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "demo" {
   container_definitions = jsonencode([
     {
       name  = "demo"
-      image = "${aws_ecr_repository.demo.repository_url}:latest"
+      image = "${aws_ecr_repository.demo.repository_url}:${var.image_tag}"
       #Terraform ECR repository ka URL automatically use karega.Lekin production mein latest ideal nahi hai
       #demo:${GIT_COMMIT_SHA} because immutable version tracking/rollback easy hota hai.
 
