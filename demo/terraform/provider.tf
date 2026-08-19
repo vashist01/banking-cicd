@@ -12,5 +12,4 @@ terraform {
 # AWS infrastructure manage karne ke liye AWS provider use karo.
 provider "aws" {
   region  = "ap-south-1"
-  profile = "banking-dev"
 }
