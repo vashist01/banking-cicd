@@ -7,8 +7,8 @@ resource "aws_ecr_repository" "demo" {
   }
 
   tags = {
-    Project    = "banking-cicd"
-    Enviroment = "dev"
-    ManagedBy  = "terraform"
+    Project     = "banking-cicd"
+    Environment = "dev"
+    ManagedBy   = "terraform"
   }
 }

@@ -10,10 +10,10 @@ resource "aws_vpc" "demo" {  #AWS mein VPC create karo. AWS resource type hai. d
 
 
   tags = {
-    Name       = "banking-cicd-vpc"
-    Project    = "banking-cicd"
-    Enviroment = "dev"
-    ManagedBy  = "terraform"
+    Name        = "banking-cicd-vpc"
+    Project     = "banking-cicd"
+    Environment = "dev"
+    ManagedBy   = "terraform"
   }
 }
 
@@ -28,9 +28,9 @@ resource "aws_subnet" "public" { #VPC bahut bada network hai. Uske andar smaller
   tags = {
     Name = "banking-cicd-public-subnet" #internet connectivity possible.
     #Private subnet: Direct Internet exposure nahi.
-    Project    = "banking-cicd"
-    Enviroment = "dev"
-    ManageBy   = "terraform"
+    Project     = "banking-cicd"
+    Environment = "dev"
+    ManageBy    = "terraform"
   }
 }
 
@@ -39,10 +39,10 @@ resource "aws_internet_gateway" "demo" {
   vpc_id = aws_vpc.demo.id
 
   tags = {
-    Name       = "banking-cicd-igw"
-    Project    = "banking-cicd"
-    Enviroment = "dev"
-    ManagedBy  = "terraform"
+    Name        = "banking-cicd-igw"
+    Project     = "banking-cicd"
+    Environment = "dev"
+    ManagedBy   = "terraform"
   }
 }
 
@@ -56,10 +56,10 @@ resource "aws_route_table" "public" { #Traffic routing decide karne ke liye "Muj
   }
 
   tags = {
-    Name       = "banking-cicd-public-route-table"
-    Project    = "banking-cicd"
-    Enviroment = "dev"
-    ManagedBy  = "terraform"
+    Name        = "banking-cicd-public-route-table"
+    Project     = "banking-cicd"
+    Environment = "dev"
+    ManagedBy   = "terraform"
   }
 }
 

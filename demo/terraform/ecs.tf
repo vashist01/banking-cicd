@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "demo" { # AWS mein ECS Cluster create karo.
 
   tags = {
     Project    = "banking-cicd"
-    Enviroment = "dev"
+    Environment = "dev"
     ManagedBy  = "terraform"
   }
 }

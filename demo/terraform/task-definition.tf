@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "demo" {
 
 
       essentinal = true
-      portMapping = [{
+      portMappings = [{
 
         containerPort = 8008 #par chalti hai,
         protocol      = "tcp"
@@ -31,8 +31,8 @@ resource "aws_ecs_task_definition" "demo" {
   ])
 
   tags = {
-    Project    = "banking-cicd"
-    Enviroment = "dev"
-    ManagedBy  = "terraform"
+    Project     = "banking-cicd"
+    Environment = "dev"
+    ManagedBy   = "terraform"
   }
 }

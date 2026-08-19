@@ -19,7 +19,7 @@ resource "aws_iam_role" "ecs_task_execution_role" { ##AWS mein IAM Role create k
 
   tags = {
     Project    = "banking-cicd"
-    Enviroment = "dev"
+    Environment = "dev"
     ManagedBy  = "terraform"
   }
 

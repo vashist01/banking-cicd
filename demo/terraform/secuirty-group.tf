@@ -20,9 +20,9 @@ resource "aws_security_group" "ecs_demo" { #Unauthorized traffic ko block karne 
   }
 
   tags = {
-    Name       = "banking-cicd-ecs-sg"
-    Project    = "banking-cicd"
-    Enviroment = "dev"
-    ManagedBy  = "terraform"
+    Name        = "banking-cicd-ecs-sg"
+    Project     = "banking-cicd"
+    Environment = "dev"
+    ManagedBy   = "terraform"
   }
 }
