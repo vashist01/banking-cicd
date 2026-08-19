@@ -41,88 +41,88 @@ pipeline {
             }
         }
 
-        stage('AWS Test') {
-            steps {
-                withCredentials([
-                    string(
-                        credentialsId: 'aws-access-key',
-                        variable: 'AWS_ACCESS_KEY_ID'
-                    ),
-                    string(
-                        credentialsId: 'aws-secret-key',
-                        variable: 'AWS_SECRET_ACCESS_KEY'
-                    )
-                ]) {
-                    sh '''
-                        aws sts get-caller-identity
-                    '''
-                }
-            }
-        }
+//         stage('AWS Test') {
+//             steps {
+//                 withCredentials([
+//                     string(
+//                         credentialsId: 'aws-access-key',
+//                         variable: 'AWS_ACCESS_KEY_ID'
+//                     ),
+//                     string(
+//                         credentialsId: 'aws-secret-key',
+//                         variable: 'AWS_SECRET_ACCESS_KEY'
+//                     )
+//                 ]) {
+//                     sh '''
+//                         aws sts get-caller-identity
+//                     '''
+//                 }
+//             }
+//         }
 
-        stage('ECR Login') {
-            steps {
-                withCredentials([
-                    string(
-                        credentialsId: 'aws-access-key',
-                        variable: 'AWS_ACCESS_KEY_ID'
-                    ),
-                    string(
-                        credentialsId: 'aws-secret-key',
-                        variable: 'AWS_SECRET_ACCESS_KEY'
-                    )
-                ]) {
-                    sh '''
-                        aws ecr get-login-password --region ap-south-1 | \
-                        docker login \
-                        --username AWS \
-                        --password-stdin \
-                        979939293482.dkr.ecr.ap-south-1.amazonaws.com
-                    '''
-                }
-            }
-        }
+//         stage('ECR Login') {
+//             steps {
+//                 withCredentials([
+//                     string(
+//                         credentialsId: 'aws-access-key',
+//                         variable: 'AWS_ACCESS_KEY_ID'
+//                     ),
+//                     string(
+//                         credentialsId: 'aws-secret-key',
+//                         variable: 'AWS_SECRET_ACCESS_KEY'
+//                     )
+//                 ]) {
+//                     sh '''
+//                         aws ecr get-login-password --region ap-south-1 | \
+//                         docker login \
+//                         --username AWS \
+//                         --password-stdin \
+//                         979939293482.dkr.ecr.ap-south-1.amazonaws.com
+//                     '''
+//                 }
+//             }
+//         }
 
-        stage('Docker Tag') {
-            steps {
-                sh '''
-                    docker tag \
-                    demo:${BUILD_NUMBER} \
-                    979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
-                '''
-            }
-        }
+//         stage('Docker Tag') {
+//             steps {
+//                 sh '''
+//                     docker tag \
+//                     demo:${BUILD_NUMBER} \
+//                     979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+//                 '''
+//             }
+//         }
 
-        stage('Push to ECR') {
-            steps {
-                sh '''
-                    docker push \
-                    979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
-                '''
-            }
-        }
-        stage('Deploy to ECS') {
-    steps {
-        withCredentials([
-            string(
-                credentialsId: 'aws-access-key',
-                variable: 'AWS_ACCESS_KEY_ID'
-            ),
-            string(
-                credentialsId: 'aws-secret-key',
-                variable: 'AWS_SECRET_ACCESS_KEY'
-            )
-        ]) {
-            sh '''
-                aws ecs update-service \
-                    --cluster banking-cluster \
-                    --service demo-task-service-g6c0zn4m \
-                    --force-new-deployment \
-                    --region ap-south-1
-            '''
-        }
-    }
-}
+//         stage('Push to ECR') {
+//             steps {
+//                 sh '''
+//                     docker push \
+//                     979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+//                 '''
+//             }
+//         }
+//         stage('Deploy to ECS') {
+//     steps {
+//         withCredentials([
+//             string(
+//                 credentialsId: 'aws-access-key',
+//                 variable: 'AWS_ACCESS_KEY_ID'
+//             ),
+//             string(
+//                 credentialsId: 'aws-secret-key',
+//                 variable: 'AWS_SECRET_ACCESS_KEY'
+//             )
+//         ]) {
+//             sh '''
+//                 aws ecs update-service \
+//                     --cluster banking-cluster \
+//                     --service demo-task-service-g6c0zn4m \
+//                     --force-new-deployment \
+//                     --region ap-south-1
+//             '''
+//         }
+//     }
+// }
     }
 
     post {
