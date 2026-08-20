@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -72,11 +73,12 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        aws ecr get-login-password --region ap-south-1 | \
+                        aws ecr get-login-password \
+                          --region ap-south-1 | \
                         docker login \
-                        --username AWS \
-                        --password-stdin \
-                        979939293482.dkr.ecr.ap-south-1.amazonaws.com
+                          --username AWS \
+                          --password-stdin \
+                          979939293482.dkr.ecr.ap-south-1.amazonaws.com
                     '''
                 }
             }
@@ -86,8 +88,8 @@ pipeline {
             steps {
                 sh '''
                     docker tag \
-                    demo:${BUILD_NUMBER} \
-                    979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+                      demo:${BUILD_NUMBER} \
+                      979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
                 '''
             }
         }
@@ -96,34 +98,40 @@ pipeline {
             steps {
                 sh '''
                     docker push \
-                    979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
+                      979939293482.dkr.ecr.ap-south-1.amazonaws.com/demo:${BUILD_NUMBER}
                 '''
             }
         }
-       
+
         stage('Terraform Deploy') {
             steps {
                 dir('terraform') {
-                    withCredentials([
-                string(
-                    credentialsId: 'aws-access-key',
-                    variable: 'AWS_ACCESS_KEY_ID'
-                ),
-                string(
-                    credentialsId: 'aws-secret-key',
-                    variable: 'AWS_SECRET_ACCESS_KEY'
-                )
-            ]) {
-                        sh '''
-                    terraform init
-                    terraform plan \
-                      -var="image_tag=${BUILD_NUMBER}"
 
-                    terraform apply \
-                      -auto-approve \
-                      -var="image_tag=${BUILD_NUMBER}"
-                '''
-            }
+                    withCredentials([
+                        string(
+                            credentialsId: 'aws-access-key',
+                            variable: 'AWS_ACCESS_KEY_ID'
+                        ),
+                        string(
+                            credentialsId: 'aws-secret-key',
+                            variable: 'AWS_SECRET_ACCESS_KEY'
+                        )
+                    ]) {
+
+                        sh '''
+                            terraform init
+
+                            terraform validate
+
+                            terraform plan \
+                              -out=tfplan \
+                              -var="image_tag=${BUILD_NUMBER}"
+
+                            terraform apply \
+                              -auto-approve \
+                              tfplan
+                        '''
+                    }
                 }
             }
         }
@@ -131,7 +139,7 @@ pipeline {
 
     post {
         success {
-            echo 'Maven build, Docker build and ECR push completed successfully'
+            echo "Deployment successful. Image: demo:${BUILD_NUMBER}"
         }
 
         failure {
