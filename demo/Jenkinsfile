@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -101,28 +100,54 @@ pipeline {
                 '''
             }
         }
-//         stage('Deploy to ECS') {
-//     steps {
-//         withCredentials([
-//             string(
-//                 credentialsId: 'aws-access-key',
-//                 variable: 'AWS_ACCESS_KEY_ID'
-//             ),
-//             string(
-//                 credentialsId: 'aws-secret-key',
-//                 variable: 'AWS_SECRET_ACCESS_KEY'
-//             )
-//         ]) {
-//             sh '''
-//                 aws ecs update-service \
-//                     --cluster banking-cluster \
-//                     --service demo-task-service-g6c0zn4m \
-//                     --force-new-deployment \
-//                     --region ap-south-1
-//             '''
-//         }
-//     }
-// }
+        //         stage('Deploy to ECS') {
+        //     steps {
+        //         withCredentials([
+        //             string(
+        //                 credentialsId: 'aws-access-key',
+        //                 variable: 'AWS_ACCESS_KEY_ID'
+        //             ),
+        //             string(
+        //                 credentialsId: 'aws-secret-key',
+        //                 variable: 'AWS_SECRET_ACCESS_KEY'
+        //             )
+        //         ]) {
+        //             sh '''
+        //                 aws ecs update-service \
+        //                     --cluster banking-cluster \
+        //                     --service demo-task-service-g6c0zn4m \
+        //                     --force-new-deployment \
+        //                     --region ap-south-1
+        //             '''
+        //         }
+        //     }
+        // }
+        stage('Terraform Deploy') {
+            steps {
+                dir('terraform') {
+                    withCredentials([
+                string(
+                    credentialsId: 'aws-access-key',
+                    variable: 'AWS_ACCESS_KEY_ID'
+                ),
+                string(
+                    credentialsId: 'aws-secret-key',
+                    variable: 'AWS_SECRET_ACCESS_KEY'
+                )
+            ]) {
+                        sh '''
+                    terraform init
+                    terraform plan \
+                      -var="image_tag=${BUILD_NUMBER}"
+
+                    terraform apply \
+                      -auto-approve \
+                      -var="image_tag=${BUILD_NUMBER}"
+                '''
+            }
+                }
+            }
+        }
     }
 
     post {
