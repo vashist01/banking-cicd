@@ -119,7 +119,7 @@ pipeline {
                     ]) {
 
                         sh '''
-                            terraform init -migrate-state -force-copy 
+                            terraform init
 
                             terraform validate
 
