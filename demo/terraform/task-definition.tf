@@ -20,7 +20,7 @@ resource "aws_ecs_task_definition" "demo" {
       #demo:${GIT_COMMIT_SHA} because immutable version tracking/rollback easy hota hai.
 
 
-      essentinal = true
+      essential = true
       portMappings = [{
 
         containerPort = 8008 #par chalti hai,

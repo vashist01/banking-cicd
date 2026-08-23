@@ -4,11 +4,11 @@ resource "aws_security_group" "ecs_demo" { #Unauthorized traffic ko block karne 
   vpc_id      = aws_vpc.demo.id
 
   ingress {
-    description = "Spring Boot"
-    from_port   = 8008
-    to_port     = 8008
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description     = "Traffic from ALB"
+    from_port       = 8008
+    to_port         = 8008
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
   }
 
   egress { #ECS application outbound traffic kar sakti hai.

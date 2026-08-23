@@ -34,6 +34,21 @@ resource "aws_subnet" "public" { #VPC bahut bada network hai. Uske andar smaller
   }
 }
 
+resource "aws_subnet" "public_2" {
+  vpc_id                  = aws_vpc.demo.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "ap-south-1b"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name        = "banking-cicd-public-subnet-2"
+    Project     = "banking-cicd"
+    Environment = "dev"
+    ManagedBy   = "terraform"
+  }
+}
+
+
 resource "aws_internet_gateway" "demo" {
   #VPC apne aap Internet se connected nahi hota. Internet Gateway ek entry/exit point provide karta hai.
   vpc_id = aws_vpc.demo.id
@@ -65,5 +80,10 @@ resource "aws_route_table" "public" { #Traffic routing decide karne ke liye "Muj
 
 resource "aws_route_table_association" "public" { #Route table ko particular subnet se connect karne ke liye.
   subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_2" {
+  subnet_id      = aws_subnet.public_2.id
   route_table_id = aws_route_table.public.id
 }
