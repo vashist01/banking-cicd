@@ -17,6 +17,16 @@ resource "aws_ecs_service" "demo" {
 
     assign_public_ip = true #Task ko public IP assign karo.
   }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.demo.arn
+    container_name   = "demo"
+    container_port   = 8008
+  }
+
+  depends_on = [
+    aws_alb_listener.demo
+  ]
+
   tags = {
     Project     = "banking-cicd"
     Environment = "dev"
