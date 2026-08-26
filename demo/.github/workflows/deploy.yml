@@ -1,10 +1,11 @@
-
 name: Banking CI/CD
 
 on:
   push:
     branches:
       - cicd-feature
+
+  workflow_dispatch:
 
 permissions:
   id-token: write
