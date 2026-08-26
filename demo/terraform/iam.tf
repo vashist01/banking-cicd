@@ -21,7 +21,7 @@ resource "aws_iam_role" "ecs_task_execution_role" { ##AWS mein IAM Role create k
     Project     = "banking-cicd"
     Environment = "dev"
     ManagedBy   = "terraform"
-  }
+  } 
 
 }
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
